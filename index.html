@@ -1,49 +1,44 @@
 <input type="number" id="historyCount" value="500" min="1">
-<button id="startBtn">100件ずつリロードして量産</button>
+<button id="startBtn">履歴量産（ブレーキ回避版）</button>
 <div id="status" style="margin-top:10px; color: blue;"></div>
 
 <script>
-    // ページが読み込まれた瞬間に実行
+    // ページ読み込み時に自動実行
     window.addEventListener('load', () => {
         const urlParams = new URLSearchParams(window.location.search);
         const done = parseInt(urlParams.get('done'));
         const target = parseInt(urlParams.get('target'));
 
-        // もしURLに「target」が入っていたら、自動継続モード
         if (!isNaN(target) && done < target) {
             const status = document.getElementById('status');
-            status.innerText = `現在 ${done} / ${target} 件作成済み。次の100件を生成中...`;
+            status.innerText = `現在 ${done} / ${target} 件。次のセットを準備中...`;
 
-            const batchSize = Math.min(100, target - done);
-            const currentPath = window.location.pathname;
-
-            // 1. pushStateで一気に履歴を積む
+            // Chromeのブレーキを避けるため、1回のリロードで多めに積む（50件程度が安定）
+            const batchSize = Math.min(50, target - done);
+            
             for (let i = 1; i <= batchSize; i++) {
                 const step = done + i;
-                // 履歴に刻むURL（パラメータを変えることで別履歴と認識させる）
-                const dummyUrl = `?done=${step}&target=${target}`;
-                window.history.pushState({ page: step }, "", dummyUrl);
+                // 履歴に刻む
+                window.history.pushState({ page: step }, "", `?done=${step}&target=${target}`);
             }
 
             const nextDone = done + batchSize;
 
-            // 2. まだ目標に届かなければ、リロードして「200件の壁」をリセット
             if (nextDone < target) {
+                // 【重要】Chromeの「Throttling」を避けるため、2秒以上待つ
                 setTimeout(() => {
-                    // 次の開始地点を指定してリロード
                     window.location.href = `?done=${nextDone}&target=${target}`;
-                }, 500); // 念のため少し長めに待機
+                }, 2000); 
             } else {
-                status.innerText = `${target} 件完了しました！`;
-                alert("すべての履歴生成が完了しました！");
+                status.innerText = `合計 ${target} 件完了しました！`;
+                alert("完了！戻るボタンを長押しして確認してください。");
             }
         }
     });
 
-    // 最初のボタンクリック
     document.getElementById('startBtn').onclick = function() {
         const count = document.getElementById('historyCount').value;
-        // 最初の0件目からスタート
+        // 最初の実行
         window.location.href = `?done=0&target=${count}`;
     };
 </script>
