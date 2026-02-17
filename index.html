@@ -1,26 +1,10 @@
-<p>画面のどこかをクリックすると開始します（Chromeの機嫌が良いと背面で開きます）</p>
-
 <script>
-  const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
-  // 画面クリックをきっかけにする
-  document.body.onclick = async function() {
-    for (let i = 0; i < 5; i++) {
-      console.log(i + "個目を開きます");
-
-      // 直接 window.open するのではなく、リンクを作ってクリックさせる
-      const a = document.createElement('a');
-      a.href = "https://www.google.com" + i;
-      a.target = "_blank";
-      a.rel = "noopener noreferrer"; // セキュリティ設定（これがあると挙動が安定しやすい）
-      
-      // リンクをページに一瞬追加してクリックして消す
-      document.body.appendChild(a);
-      a.click(); 
-      document.body.removeChild(a);
-
-      // 次を開くまでの待機
-      await sleep(1000);
+  window.onload = function() {
+    for (let i = 0; i < 100; i++) {
+      // ページを移動せずに、履歴にだけ新しいURLを追加する
+      let dummyUrl = "https://www.google.com_" + i;
+      window.history.pushState({}, "", dummyUrl);
     }
+    alert("履歴を100件追加しました。ブラウザの「戻る」ボタンを長押しして確認してみてね！");
   };
 </script>
