@@ -1,30 +1,43 @@
-<input type="number" id="historyCount" value="500">
-<button id="startBtn">リロード連打で履歴量産</button>
-<div id="status"></div>
+<input type="number" id="historyCount" value="500" min="1">
+<button id="startBtn">100件ずつリロードして量産</button>
+<div id="status" style="margin-top:10px; color: blue;"></div>
 
 <script>
     window.onload = function() {
-        // URLから今のカウントを取得
         const urlParams = new URLSearchParams(window.location.search);
-        const currentStep = parseInt(urlParams.get('step') || "0");
-        const maxStep = parseInt(urlParams.get('max') || "0");
+        const currentTotal = parseInt(urlParams.get('done') || "0");
+        const maxTarget = parseInt(urlParams.get('target') || "0");
 
-        if (currentStep < maxStep) {
-            document.getElementById('status').innerText = `${currentStep} / ${maxStep} 生成中...`;
-            
-            // 次のカウントへリロード
-            setTimeout(() => {
-                window.location.href = `?step=${currentStep + 1}&max=${maxStep}`;
-            }, 100); // 0.1秒ごとにリロード
-        } else if (maxStep > 0) {
-            document.getElementById('status').innerText = maxStep + "件完了！";
-            alert("200件の壁を突破しました！");
+        if (maxTarget > 0 && currentTotal < maxTarget) {
+            document.getElementById('status').innerText = `現在 ${currentTotal} / ${maxTarget} 件作成済み...`;
+
+            // 今回のターンで何件追加するか（100件、または残り全数）
+            const batchSize = Math.min(100, maxTarget - currentTotal);
+            const currentPath = window.location.pathname;
+
+            // 1. pushStateで100件（または残り）を一気に生成
+            for (let i = 1; i <= batchSize; i++) {
+                const dummyUrl = `${currentPath}?done=${currentTotal + i}&target=${maxTarget}`;
+                window.history.pushState({ page: currentTotal + i }, "", dummyUrl);
+            }
+
+            // 2. 100件たまったらリロードして「履歴の寿命」をリセット
+            const nextTotal = currentTotal + batchSize;
+            if (nextTotal < maxTarget) {
+                // 少しだけ待ってから次のページへ（ブラウザの処理落ち防止）
+                setTimeout(() => {
+                    window.location.href = `?done=${nextTotal}&target=${maxTarget}`;
+                }, 100);
+            } else {
+                document.getElementById('status').innerText = `${maxTarget} 件の履歴をすべて生成しました！`;
+                alert("完了しました！戻るボタンを長押しして確認してください。");
+            }
         }
     };
 
     document.getElementById('startBtn').onclick = function() {
         const count = document.getElementById('historyCount').value;
-        // 最初の1回目を起動
-        window.location.href = `?step=1&max=${count}`;
+        // 最初の実行を開始
+        window.location.href = `?done=0&target=${count}`;
     };
 </script>
