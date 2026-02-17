@@ -1,8 +1,26 @@
+<p>画面のどこかをクリックすると開始します（Chromeの機嫌が良いと背面で開きます）</p>
+
 <script>
-  i = 0
-  window.onload = setInterval(() => {
-    window.open("https://www.google.com/search?q=" + i, '_blank');
-    window.focus();
-    i++
-}, 500);
+  const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+  // 画面クリックをきっかけにする
+  document.body.onclick = async function() {
+    for (let i = 0; i < 5; i++) {
+      console.log(i + "個目を開きます");
+
+      // 直接 window.open するのではなく、リンクを作ってクリックさせる
+      const a = document.createElement('a');
+      a.href = "https://www.google.com" + i;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer"; // セキュリティ設定（これがあると挙動が安定しやすい）
+      
+      // リンクをページに一瞬追加してクリックして消す
+      document.body.appendChild(a);
+      a.click(); 
+      document.body.removeChild(a);
+
+      // 次を開くまでの待機
+      await sleep(1000);
+    }
+  };
 </script>
