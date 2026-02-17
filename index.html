@@ -1,23 +1,15 @@
-<script>
-  const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+window.onload = function() {
+    // 履歴を生成したい数（例: 100件）
+    const count = 100;
 
-  window.onload = async function() {
-    // 1. 履歴を読み込ませるための「見えない枠」を作る
-    const iframe = document.createElement('iframe');
-    iframe.style.width = "1px";
-    iframe.style.height = "1px";
-    iframe.style.position = "absolute";
-    iframe.style.left = "-9999px"; // 画面の外に飛ばして完全に見えなくする
-    document.body.appendChild(iframe);
-
-    for (let i = 0; i < 10; i++) {
-      console.log(i + "個目の履歴を生成中...");
-      
-      // 2. iframeの中身を切り替える（これで履歴に残る）
-      iframe.src = "https://www.google.com" + i;
-
-      await sleep(1000); // 読み込み時間を少し待つ
+    for (let i = 0; i < count; i++) {
+        // 現在のURLにダミーのパラメータ (?history=0, ?history=1...) を付けて履歴に追加
+        // これなら同じドメイン内なので SecurityError は出ません
+        const dummyUrl = window.location.pathname + "?history=" + i;
+        
+        window.history.pushState({ page: i }, "Title " + i, dummyUrl);
     }
-    alert("履歴の量産が終わりました！");
-  };
-</script>
+
+    console.log(count + "件の履歴を生成しました。");
+    alert("完了！ブラウザの「戻る」ボタンを長押しして履歴を確認してみてね。");
+};
