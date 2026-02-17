@@ -1,17 +1,30 @@
+<input type="number" id="historyCount" value="100" min="1">
+<button id="startBtn">履歴を生成する</button>
+
 <script>
-    window.onload = function() {
-        // 履歴を生成したい数（例: 100件）
-        const count = 100;
-    
-        for (let i = 0; i < count; i++) {
-            // 現在のURLにダミーのパラメータ (?history=0, ?history=1...) を付けて履歴に追加
-            // これなら同じドメイン内なので SecurityError は出ません
-            const dummyUrl = window.location.pathname + "?history=" + i;
-            
-            window.history.pushState({ page: i }, "Title " + i, dummyUrl);
+    document.getElementById('startBtn').onclick = function() {
+        // 入力された数値を取得
+        const count = parseInt(document.getElementById('historyCount').value);
+        const status = document.getElementById('status');
+        if (isNaN(count) || count <= 0) {
+           alert("有効な数字を入力してください");
+            return;
         }
-    
-        console.log(count + "件の履歴を生成しました。");
-        alert("完了！ブラウザの「戻る」ボタンを長押しして履歴を確認してみてね。");
-    };
+        
+        // 現在のパスを取得（例: /noisemaker1/index.html）
+        const currentPath = window.location.pathname;
+        
+        // ループで履歴を生成
+        for (let i = 0; i < count; i++) {
+               
+        　// 同じドメイン内のURLとして ?h=0, ?h=1... を追加
+          const dummyUrl = currentPath + "?h=" + i;
+             
+            // 履歴を積み上げる（タブ移動なし）
+            window.history.pushState({ page: i }, "", dummyUrl);
+        }
+
+        status.innerText = count + "件の履歴を生成しました！";
+        alert(count + "件完了！ブラウザの「戻る」ボタンを長押しして確認してください。");
+     };
 </script>
