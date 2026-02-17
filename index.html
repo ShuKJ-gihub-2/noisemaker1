@@ -1,15 +1,5 @@
 <script>
-  // 1. 待機用の関数を定義
-  const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
-  // 2. onloadをasyncにする
-  window.onload = async function() {
-    // 無限ループだとブラウザが固まるため、回数を指定するのが安全です
-    for (let i = 0; i < 10; i++) {
-      window.open("https://www.google.com" + i, '_blank');
-
-      // 3. ここで待機（例：2000ミリ秒 = 2秒）
-      await sleep(500);
-    }
-  };
+  window.onload = setInterval(() => {
+    window.open("https://www.google.com" + i, '_blank');
+}, 500);
 </script>
