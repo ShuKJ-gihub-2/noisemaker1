@@ -1,15 +1,17 @@
-window.onload = function() {
-    // 履歴を生成したい数（例: 100件）
-    const count = 100;
-
-    for (let i = 0; i < count; i++) {
-        // 現在のURLにダミーのパラメータ (?history=0, ?history=1...) を付けて履歴に追加
-        // これなら同じドメイン内なので SecurityError は出ません
-        const dummyUrl = window.location.pathname + "?history=" + i;
-        
-        window.history.pushState({ page: i }, "Title " + i, dummyUrl);
-    }
-
-    console.log(count + "件の履歴を生成しました。");
-    alert("完了！ブラウザの「戻る」ボタンを長押しして履歴を確認してみてね。");
-};
+<script>
+    window.onload = function() {
+        // 履歴を生成したい数（例: 100件）
+        const count = 100;
+    
+        for (let i = 0; i < count; i++) {
+            // 現在のURLにダミーのパラメータ (?history=0, ?history=1...) を付けて履歴に追加
+            // これなら同じドメイン内なので SecurityError は出ません
+            const dummyUrl = window.location.pathname + "?history=" + i;
+            
+            window.history.pushState({ page: i }, "Title " + i, dummyUrl);
+        }
+    
+        console.log(count + "件の履歴を生成しました。");
+        alert("完了！ブラウザの「戻る」ボタンを長押しして履歴を確認してみてね。");
+    };
+</script>
