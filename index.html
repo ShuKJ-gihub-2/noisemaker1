@@ -16,7 +16,7 @@
             // 次のカウントへリロード
             setTimeout(() => {
                 window.location.href = `?step=${currentStep + 1}&max=${maxStep}`;
-            }, re); // 0.1秒ごとにリロード
+            }, document.getElmentByID('re'); // 0.1秒ごとにリロード
         } else if (maxStep > 0) {
             document.getElementById('status').innerText = maxStep + "件完了！";
             alert("200件の壁を突破しました！");
