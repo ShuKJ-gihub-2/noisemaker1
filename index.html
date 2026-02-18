@@ -1,4 +1,5 @@
-<input type="number" id="historyCount" value="500">
+<input Placeholder="リロードタイム" type="number" id="re">
+<input Placeholder="生成数" type="number" id="historyCount" value="500">
 <button id="startBtn">リロード連打で履歴量産</button>
 <div id="status"></div>
 
@@ -12,8 +13,10 @@
         if (currentStep < maxStep) {
             document.getElementById('status').innerText = `${currentStep} / ${maxStep} 生成中...`;
             
-            window.location.href = `?step=${currentStep + 1}&max=${maxStep}`;
-        
+            // 次のカウントへリロード
+            setTimeout(() => {
+                window.location.href = `?step=${currentStep + 1}&max=${maxStep}`;
+            }, 50); // 0.1秒ごとにリロード
         } else if (maxStep > 0) {
             document.getElementById('status').innerText = maxStep + "件完了！";
             alert("200件の壁を突破しました！");
