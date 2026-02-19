@@ -9,7 +9,7 @@
         const urlParams = new URLSearchParams(window.location.search);
         const currentStep = parseInt(urlParams.get('step') || "0");
         const maxStep = parseInt(urlParams.get('max') || "0");
-        const timeStep = parseInt(urlParams.get('time') || "0")
+        const timeStep = parseInt(urlParams.get('time') || "100")
 
         if (currentStep < maxStep) {
             document.getElementById('status').innerText = `${currentStep} / ${maxStep} 生成中...`;
@@ -20,7 +20,7 @@
             }, timeStep); // 0.1秒ごとにリロード
         } else if (maxStep > 0) {
             document.getElementById('status').innerText = maxStep + "件完了！";
-            alert("200件の壁を突破しました！");
+            alert("履歴を生成しました");
         }
     };
 
